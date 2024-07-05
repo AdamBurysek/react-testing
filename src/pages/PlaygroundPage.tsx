@@ -1,7 +1,7 @@
-import SearchBox from "../components/SearchBox";
+import TagList from "../components/TagList";
 
 const PlaygroundPage = () => {
-  return <SearchBox onChange={(text) => console.log(text)} />;
+  return <TagList />;
 };
 
 export default PlaygroundPage;
