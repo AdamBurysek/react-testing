@@ -4,25 +4,26 @@ import { Theme } from "@radix-ui/themes";
 import userEvent from "@testing-library/user-event";
 
 describe("OrderStatusSelector", () => {
-  it("should render New as the default value", () => {
+  const renderComponent = () => {
     render(
       <Theme>
         <OrderStatusSelector onChange={vi.fn()} />
       </Theme>
     );
+    return {
+      button: screen.getByRole("combobox"),
+    };
+  };
 
-    const button = screen.getByRole("combobox");
+  it("should render New as the default value", () => {
+    const { button } = renderComponent();
+
     expect(button).toHaveTextContent(/new/i);
   });
 
   it("should render correct statuses", async () => {
-    render(
-      <Theme>
-        <OrderStatusSelector onChange={vi.fn()} />
-      </Theme>
-    );
+    const { button } = renderComponent();
 
-    const button = screen.getByRole("combobox");
     const user = userEvent.setup();
     await user.click(button);
 
