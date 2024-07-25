@@ -44,4 +44,16 @@ describe("ProductDetail", () => {
 
     expect(await screen.findByText(/invalid/i)).toBeInTheDocument();
   });
+
+  it("should render an error message if the request fails", async () => {
+    server.use(
+      http.get("/products/1", () => {
+        return HttpResponse.error();
+      })
+    );
+
+    render(<ProductDetail productId={1} />);
+
+    expect(await screen.findByText(/error/i)).toBeInTheDocument();
+  });
 });
