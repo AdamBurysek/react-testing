@@ -1,9 +1,9 @@
-import OrderStatusSelector from "../components/OrderStatusSelector";
+import ProductDetail from "../components/ProductDetail";
 
 const PlaygroundPage = () => {
   return (
     <>
-      <OrderStatusSelector onChange={(value) => console.log(value)} />
+      <ProductDetail productId={1} />
     </>
   );
 };

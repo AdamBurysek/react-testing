@@ -1,4 +1,5 @@
 import { http, HttpResponse } from "msw";
+import { products } from "./data";
 
 export const handlers = [
   http.get("/categories", () => {
@@ -10,17 +11,12 @@ export const handlers = [
   }),
 
   http.get("/products", (req) => {
-    return HttpResponse.json([
-      { id: 1, name: "iPhone 14" },
-      { id: 2, name: "iPhone 14 Pro" },
-      { id: 3, name: "iPhone 14 Pro Max" },
-      { id: 4, name: "iPhone 14 Plus" },
-      { id: 5, name: "iPhone 14 Pro Max" },
-      { id: 6, name: "iPhone 14 Plus" },
-      { id: 7, name: "iPhone 14 Pro" },
-      { id: 8, name: "iPhone 14 Pro Max" },
-      { id: 9, name: "iPhone 14 Plus" },
-      { id: 10, name: "iPhone 14 Pro Max" },
-    ]);
+    return HttpResponse.json(products);
+  }),
+  http.get("/products/:id", ({ params }) => {
+    const id = parseInt(params.id as string);
+    const product = products.find((p) => p.id === id);
+    if (!product) return new Response(null, { status: 404 });
+    return HttpResponse.json(product);
   }),
 ];
