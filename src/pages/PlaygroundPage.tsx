@@ -1,9 +1,9 @@
-import ProductDetail from "../components/ProductDetail";
+import BrowseProducts from "./BrowseProductsPage";
 
 const PlaygroundPage = () => {
   return (
     <>
-      <ProductDetail productId={1} />
+      <BrowseProducts />
     </>
   );
 };
