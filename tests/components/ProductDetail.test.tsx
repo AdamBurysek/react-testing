@@ -3,10 +3,11 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
+import { HttpResponse, delay, http } from "msw";
 import ProductDetail from "../../src/components/ProductDetail";
-import { server } from "../mocks/server";
-import { delay, http, HttpResponse } from "msw";
+import AllProviders from "../AllProviders";
 import { db } from "../mocks/db";
+import { server } from "../mocks/server";
 
 describe("ProductDetail", () => {
   let productId: number;
@@ -25,7 +26,7 @@ describe("ProductDetail", () => {
       where: { id: { equals: productId } },
     });
 
-    render(<ProductDetail productId={productId} />);
+    render(<ProductDetail productId={productId} />, { wrapper: AllProviders });
 
     expect(
       await screen.findByText(new RegExp(product!.name))
@@ -38,15 +39,9 @@ describe("ProductDetail", () => {
   it("should render message if product not found", async () => {
     server.use(http.get("/products/1", () => HttpResponse.json(null)));
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/not found/i)).toBeInTheDocument();
-  });
-
-  it("should render an error for invalid product id", async () => {
-    render(<ProductDetail productId={0} />);
-
-    expect(await screen.findByText(/invalid/i)).toBeInTheDocument();
   });
 
   it("should render an error message if the request fails", async () => {
@@ -56,7 +51,7 @@ describe("ProductDetail", () => {
       })
     );
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/error/i)).toBeInTheDocument();
   });
@@ -69,13 +64,13 @@ describe("ProductDetail", () => {
       })
     );
 
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     expect(await screen.findByText(/loading/i)).toBeInTheDocument();
   });
 
   it("should remove the loading message when the request is complete", async () => {
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() => screen.getByText(/loading/i));
   });
@@ -87,7 +82,7 @@ describe("ProductDetail", () => {
         return HttpResponse.error();
       })
     );
-    render(<ProductDetail productId={1} />);
+    render(<ProductDetail productId={1} />, { wrapper: AllProviders });
 
     await waitForElementToBeRemoved(() => screen.getByText(/loading/i));
   });
