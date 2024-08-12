@@ -56,7 +56,7 @@ function BrowseProducts() {
           <Skeleton />
         </div>
       );
-    if (errorCategories) return <div>Error: {errorCategories}</div>;
+    if (errorCategories) return null;
     return (
       <Select.Root
         onValueChange={(categoryId) =>
@@ -98,8 +98,8 @@ function BrowseProducts() {
           </Table.Row>
         </Table.Header>
         <Table.Body
-          role={isProductsLoading ? "progressbar" : ""}
-          aria-label={isProductsLoading ? "Loading Products" : ""}
+          role={isProductsLoading ? "progressbar" : undefined}
+          aria-label={isProductsLoading ? "Loading Products" : undefined}
         >
           {isProductsLoading &&
             skeletons.map((skeleton) => (
