@@ -17,8 +17,11 @@ describe("BrowseProductsPage", () => {
 
   beforeAll(() => {
     [1, 2].forEach((item) => {
-      categories.push(db.category.create({ name: "Category" + item }));
-      products.push(db.product.create());
+      const category = db.category.create({ name: "category" + item });
+      categories.push(category);
+      [1, 2].forEach(() => {
+        products.push(db.product.create({ categoryId: category.id }));
+      });
     });
   });
 
@@ -104,6 +107,55 @@ describe("BrowseProductsPage", () => {
     const { getProductsSkeleton } = rednderComponent();
 
     await waitForElementToBeRemoved(getProductsSkeleton);
+
+    products.forEach((product) => {
+      expect(screen.getByText(product.name)).toBeInTheDocument();
+    });
+  });
+
+  it("should filter products by category", async () => {
+    const { getCategoriesSkeleton } = rednderComponent();
+
+    await waitForElementToBeRemoved(getCategoriesSkeleton);
+
+    const combobox = await screen.findByRole("combobox");
+
+    const user = userEvent.setup();
+    await user.click(combobox);
+
+    const selectedCategory = categories[0];
+    const option = screen.getByRole("option", { name: selectedCategory.name });
+    await user.click(option);
+
+    const products = db.product.findMany({
+      where: { categoryId: { equals: selectedCategory.id } },
+    });
+    const rows = await screen.findAllByRole("row");
+    const dataRows = rows.slice(1);
+    expect(dataRows).toHaveLength(products.length);
+
+    products.forEach((product) => {
+      expect(screen.getByText(product.name)).toBeInTheDocument();
+    });
+  });
+
+  it("should render all products when all categories are selected", async () => {
+    const { getCategoriesSkeleton } = rednderComponent();
+
+    await waitForElementToBeRemoved(getCategoriesSkeleton);
+
+    const combobox = await screen.findByRole("combobox");
+
+    const user = userEvent.setup();
+    await user.click(combobox);
+
+    const option = screen.getByRole("option", { name: /all/i });
+    await user.click(option);
+
+    const products = db.product.getAll();
+    const rows = await screen.findAllByRole("row");
+    const dataRows = rows.slice(1);
+    expect(dataRows).toHaveLength(products.length);
 
     products.forEach((product) => {
       expect(screen.getByText(product.name)).toBeInTheDocument();
