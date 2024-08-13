@@ -15,3 +15,8 @@ export const db = factory({
     category: oneOf("category"),
   },
 });
+
+export const getProductsByCategoryId = (categoryId: number) =>
+  db.product.findMany({
+    where: { categoryId: { equals: categoryId } },
+  });
