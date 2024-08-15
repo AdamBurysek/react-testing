@@ -13,7 +13,7 @@ function BrowseProducts() {
     isLoading: productsLoading,
     error: productsError,
   } = useQuery<Product[], Error>({
-    queryKey: ["product", "list"],
+    queryKey: ["product"],
     queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
 
@@ -22,7 +22,7 @@ function BrowseProducts() {
     isLoading: categoriesLoading,
     error: categoriesError,
   } = useQuery<Category[], Error>({
-    queryKey: ["category", "list"],
+    queryKey: ["category"],
     queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
   });
 
