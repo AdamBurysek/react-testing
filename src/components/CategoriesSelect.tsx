@@ -5,10 +5,10 @@ import { useQuery } from "react-query";
 import { Category } from "../entities";
 
 interface Props {
-  setSelectedCategoryId: (categoryId: number | undefined) => void;
+  onChange: (categoryId: number | undefined) => void;
 }
 
-const CategoriesSelect = ({ setSelectedCategoryId }: Props) => {
+const CategoriesSelect = ({ onChange }: Props) => {
   const {
     data: categories,
     isLoading: categoriesLoading,
@@ -26,11 +26,7 @@ const CategoriesSelect = ({ setSelectedCategoryId }: Props) => {
     );
   if (categoriesError) return null;
   return (
-    <Select.Root
-      onValueChange={(categoryId) =>
-        setSelectedCategoryId(parseInt(categoryId))
-      }
-    >
+    <Select.Root onValueChange={(categoryId) => onChange(parseInt(categoryId))}>
       <Select.Trigger placeholder="Filter by Category" />
       <Select.Content>
         <Select.Group>

@@ -79,7 +79,7 @@ function BrowseProducts() {
     <div>
       <h1>Products</h1>
       <div className="max-w-xs">
-        <CategoriesSelect setSelectedCategoryId={setSelectedCategoryId} />
+        <CategoriesSelect onChange={setSelectedCategoryId} />
       </div>
       {renderProducts()}
     </div>
