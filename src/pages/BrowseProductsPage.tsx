@@ -1,11 +1,12 @@
-import { Select, Table } from "@radix-ui/themes";
+import { Table } from "@radix-ui/themes";
 import axios from "axios";
+import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useQuery } from "react-query";
+import CategoriesSelect from "../components/CategoriesSelect";
 import QuantitySelector from "../components/QuantitySelector";
-import { Category, Product } from "../entities";
-import { useState } from "react";
+import { Product } from "../entities";
 
 function BrowseProducts() {
   const {
@@ -17,50 +18,11 @@ function BrowseProducts() {
     queryFn: () => axios.get<Product[]>("/products").then((res) => res.data),
   });
 
-  const {
-    data: categories,
-    isLoading: categoriesLoading,
-    error: categoriesError,
-  } = useQuery<Category[], Error>({
-    queryKey: ["category"],
-    queryFn: () => axios.get<Category[]>("/categories").then((res) => res.data),
-  });
-
   const [selectedCategoryId, setSelectedCategoryId] = useState<
     number | undefined
   >();
 
   if (productsError) return <div>Error: {productsError.message}</div>;
-
-  const renderCategories = () => {
-    if (categoriesLoading)
-      return (
-        <div role="progressbar" aria-label="Loading Categories">
-          <Skeleton />
-        </div>
-      );
-    if (categoriesError) return null;
-    return (
-      <Select.Root
-        onValueChange={(categoryId) =>
-          setSelectedCategoryId(parseInt(categoryId))
-        }
-      >
-        <Select.Trigger placeholder="Filter by Category" />
-        <Select.Content>
-          <Select.Group>
-            <Select.Label>Category</Select.Label>
-            <Select.Item value="all">All</Select.Item>
-            {categories?.map((category) => (
-              <Select.Item key={category.id} value={category.id.toString()}>
-                {category.name}
-              </Select.Item>
-            ))}
-          </Select.Group>
-        </Select.Content>
-      </Select.Root>
-    );
-  };
 
   const renderProducts = () => {
     const skeletons = [1, 2, 3, 4, 5];
@@ -116,7 +78,9 @@ function BrowseProducts() {
   return (
     <div>
       <h1>Products</h1>
-      <div className="max-w-xs">{renderCategories()}</div>
+      <div className="max-w-xs">
+        <CategoriesSelect setSelectedCategoryId={setSelectedCategoryId} />
+      </div>
       {renderProducts()}
     </div>
   );
